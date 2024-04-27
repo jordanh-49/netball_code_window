@@ -55,7 +55,8 @@ def shot_recording_fragment(quarter_selected):
     # Display shot results
     st.write("Shot Results:")
 
-    st.dataframe(pd.DataFrame(st.session_state.shot_results, columns=["Team", "Position", "Result","Quarter","Timestamp"]))
+    df = pd.DataFrame(st.session_state.shot_results, columns=["Team", "Position", "Result","Quarter","Timestamp"])
+    st.dataframe(df)
 
 
 # Select quarter and reset control
@@ -63,9 +64,14 @@ quarter_selected = st.selectbox("Select Quarter", options=[None,1, 2, 3, 4],key=
 
 
 def reset():
+    if st.session_state.quarter:
+        pd.DataFrame(st.session_state.shot_results, columns=["Team", "Position", "Result","Quarter","Timestamp"]).to_csv(f'data/{st.session_state.quarter}_game.csv',index=False)
+        st.toast("Data saved for this quarter!")
+
     st.session_state.timer = 600
     st.session_state.shot_results = []
     st.session_state.quarter = None
+
 
     return
 
